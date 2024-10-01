@@ -1,0 +1,8 @@
+package com.crimsonlogic.onlinebiddingsystem.dto;
+
+@Data
+public class UserDto {
+    private String email;
+    private String password;
+    private String roleName; // Role to be assigned during registration
+}

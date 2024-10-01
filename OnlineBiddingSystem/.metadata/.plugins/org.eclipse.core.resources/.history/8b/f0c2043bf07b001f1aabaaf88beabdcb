@@ -1,0 +1,11 @@
+package com.crimsonlogic.onlinebiddingsystem.entity;
+
+import jakarta.persistence.Id;
+
+public class User {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "custom-id-generator")
+	@GenericGenerator(name = "custom-id-generator", strategy = "com.crimsonlogic.flightticketbookingsystem.util.IdGenerator")
+	private Long user_id;
+}

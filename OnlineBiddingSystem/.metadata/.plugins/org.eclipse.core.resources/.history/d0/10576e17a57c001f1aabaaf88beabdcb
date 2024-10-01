@@ -1,0 +1,25 @@
+package com.crimsonlogic.onlinebiddingsystem.controller;
+
+import com.crimsonlogic.onlinebiddingsystem.dto.RegistrationDto;
+import com.crimsonlogic.onlinebiddingsystem.dto.UserDto;
+import com.crimsonlogic.onlinebiddingsystem.dto.UserInfoDto;
+import com.crimsonlogic.onlinebiddingsystem.service.AuthService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+@RestController
+@RequestMapping("/api/auth")
+public class AuthController {
+
+    @Autowired
+    private AuthService authService;
+
+    @PostMapping("/register")
+    public void register(@RequestBody RegistrationDto registrationDto) {
+        authService.register(registrationDto.getUser(), registrationDto.getUserInfo());
+    }
+
+    @PostMapping("/login")
+    public String login(@RequestBody UserDto userDto) {
+        return authService.login(userDto);
+    }
+}

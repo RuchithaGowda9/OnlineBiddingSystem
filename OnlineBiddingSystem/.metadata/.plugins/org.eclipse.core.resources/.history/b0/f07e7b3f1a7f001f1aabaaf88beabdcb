@@ -1,0 +1,4 @@
+package com.crimsonlogic.onlinebiddingsystem.repository;
+public interface WalletRepository extends JpaRepository<Wallet, Long> {
+    Optional<Wallet> findByUser(User user);
+}

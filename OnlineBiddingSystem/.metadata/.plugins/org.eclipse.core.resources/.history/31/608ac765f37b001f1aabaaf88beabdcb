@@ -1,0 +1,9 @@
+package com.crimsonlogic.onlinebiddingsystem.entity;
+
+import jakarta.persistence.Id;
+
+public class User {
+
+	@Id
+	private Long user_id;
+}

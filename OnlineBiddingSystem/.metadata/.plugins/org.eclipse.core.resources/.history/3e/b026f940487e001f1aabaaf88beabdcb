@@ -1,0 +1,30 @@
+package com.crimsonlogic.onlinebiddingsystem.controller;
+
+public class UserController {
+	
+	@PutMapping("/update-user")
+	public ResponseEntity<String> updateUser(@RequestBody UserInfoDto userInfoDto) {
+	    UserInfo userInfo = userInfoRepository.findById(userInfoDto.getUserInfoId())
+	            .orElseThrow(() -> new RuntimeException("UserInfo not found"));
+
+	    User user = userInfo.getUser(); // Get associated User
+
+	    // Update the fields
+	    if (userInfoDto.getFirstName() != null) {
+	        userInfo.setFirstName(userInfoDto.getFirstName());
+	    }
+	    if (userInfoDto.getLastName() != null) {
+	        userInfo.setLastName(userInfoDto.getLastName());
+	    }
+	    if (userInfoDto.getPhoneNumber() != null) {
+	        userInfo.setPhoneNumber(userInfoDto.getPhoneNumber());
+	    }
+
+	    // Save changes
+	    userInfoRepository.save(userInfo);
+
+	    return ResponseEntity.ok("User information updated successfully");
+	}
+
+
+}

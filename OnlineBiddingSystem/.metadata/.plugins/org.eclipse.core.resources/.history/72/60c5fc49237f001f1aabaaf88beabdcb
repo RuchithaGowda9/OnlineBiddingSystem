@@ -1,0 +1,6 @@
+package com.crimsonlogic.onlinebiddingsystem.service;
+
+public class Snippet {
+	Optional<Wallet> getWalletByUserId(Long userId)
+}
+

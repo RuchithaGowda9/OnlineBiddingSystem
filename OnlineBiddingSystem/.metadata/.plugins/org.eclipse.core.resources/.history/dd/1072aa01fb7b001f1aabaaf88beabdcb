@@ -1,0 +1,9 @@
+package com.crimsonlogic.onlinebiddingsystem.entity;
+@Entity
+@Table(name = "user_info")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class User_Info {
+
+}

@@ -1,0 +1,47 @@
+.custom-tabs .nav-link {
+    color: #5c23a6; /* Tab text color */
+    font-weight: bold; /* Make tab text bold */
+    border: none; /* Remove border */
+    border-bottom: 3px solid transparent; /* Bottom border for active tab */
+    transition: border-color 0.3s ease, color 0.3s ease; /* Smooth transitions */
+}
+
+.custom-tabs .nav-link.active {
+    border-color: #5c23a6; /* Active tab color */
+    color: #5c23a6; /* Active tab text color */
+}
+
+.custom-tabs .nav-link:hover {
+    border-color: #5c23a6; /* Hover effect */
+    color: #5c23a6; /* Maintain text color on hover */
+}
+
+.custom-tabs .nav-item {
+    margin-right: 15px; /* Space between tabs */
+}
+.custom-input {
+    max-width: 400px; /* Reduce input width */
+    margin: auto; /* Center the input field */
+}
+
+.custom-tabs .nav-link {
+    color: #5c23a6; /* Tab text color */
+    font-weight: bold; /* Make tab text bold */
+    border: none; /* Remove border */
+    border-bottom: 3px solid transparent; /* Bottom border for active tab */
+    transition: border-color 0.3s ease, color 0.3s ease; /* Smooth transitions */
+}
+
+.custom-tabs .nav-link.active {
+    border-color: #5c23a6; /* Active tab color */
+    color: #5c23a6; /* Active tab text color */
+}
+
+.custom-tabs .nav-link:hover {
+    border-color: #5c23a6; /* Hover effect */
+    color: #5c23a6; /* Maintain text color on hover */
+}
+
+.custom-tabs .nav-item {
+    margin-right: 15px; /* Space between tabs */
+}

@@ -1,0 +1,8 @@
+package com.crimsonlogic.onlinebiddingsystem.repository;
+
+public class Snippet {
+	public static void main(String[] args) {
+		UserInfoRepository
+	}
+}
+

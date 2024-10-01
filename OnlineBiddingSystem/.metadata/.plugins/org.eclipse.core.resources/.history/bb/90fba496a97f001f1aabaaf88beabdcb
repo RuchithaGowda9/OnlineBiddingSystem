@@ -1,0 +1,10 @@
+package com.crimsonlogic.onlinebiddingsystem.service;
+
+import java.util.Optional;
+
+import com.crimsonlogic.onlinebiddingsystem.entity.Wallet;
+
+public interface WalletService {
+	//Optional<Wallet> getWalletByUserId(Long userId);
+
+}

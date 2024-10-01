@@ -1,0 +1,6 @@
+package com.crimsonlogic.onlinebiddingsystem.entity;
+
+public class ProductCategory {
+    
+   
+}

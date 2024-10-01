@@ -1,0 +1,5 @@
+package com.crimsonlogic.onlinebiddingsystem.dto;
+
+public class UserDto {
+
+}

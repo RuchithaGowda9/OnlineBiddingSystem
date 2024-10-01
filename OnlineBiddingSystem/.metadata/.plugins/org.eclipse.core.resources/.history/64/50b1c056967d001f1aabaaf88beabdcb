@@ -1,0 +1,3 @@
+public class RoleDto {
+    private String name; // This should match the role names in your Role entity
+}

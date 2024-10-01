@@ -1,0 +1,108 @@
+package com.crimsonlogic.onlinebiddingsystem.serviceimpl;
+
+import com.crimsonlogic.onlinebiddingsystem.dto.UserDto;
+import com.crimsonlogic.onlinebiddingsystem.dto.UserInfoDto;
+import com.crimsonlogic.onlinebiddingsystem.entity.Role;
+import com.crimsonlogic.onlinebiddingsystem.entity.User;
+import com.crimsonlogic.onlinebiddingsystem.entity.UserInfo;
+import com.crimsonlogic.onlinebiddingsystem.repository.RoleRepository;
+import com.crimsonlogic.onlinebiddingsystem.repository.UserRepository;
+import com.crimsonlogic.onlinebiddingsystem.repository.UserInfoRepository;
+import com.crimsonlogic.onlinebiddingsystem.service.AuthService;
+
+import jakarta.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class AuthServiceImpl implements AuthService {
+
+    /**
+     * @author Ruchitha M
+     */
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserInfoRepository userInfoRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Transactional
+    @Override
+    public void register(UserDto userDto, UserInfoDto userInfoDto) {
+        User user = new User();
+        user.setEmail(userDto.getEmail());
+        user.setPassword(userDto.getPassword());
+
+        userRepository.save(user);
+
+        UserInfo userInfo = new UserInfo();
+        userInfo.setFirstName(userInfoDto.getFirstName());
+        userInfo.setLastName(userInfoDto.getLastName());
+        userInfo.setPhoneNumber(userInfoDto.getPhoneNumber());
+        userInfo.setUser(user);
+
+        Role role;
+        switch (userDto.getRoleName()) {
+            case "ADMIN":
+                role = roleRepository.findById(1L).orElseThrow(() -> new RuntimeException("Role not found"));
+                break;
+            case "DELIVERY_PERSON":
+                role = roleRepository.findById(3L).orElseThrow(() -> new RuntimeException("Role not found"));
+                break;
+            case "CUSTOMER":
+            default:
+                role = roleRepository.findById(2L).orElseThrow(() -> new RuntimeException("Role not found"));
+                break;
+        }
+
+        userInfo.setRole(role);
+        userInfoRepository.save(userInfo);
+    }
+
+    @Override
+    public String login(UserDto userDto) {
+        User user = userRepository.findByEmail(userDto.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found")); 
+        if (userDto.getPassword().equals(user.getPassword())) {
+            UserInfo userInfo = userInfoRepository.findByUser(user)
+                    .orElseThrow(() -> new RuntimeException("UserInfo not found"));
+            return getDashboardUrlByRole(userInfo.getRole().getRoleId());
+        } else {
+            throw new RuntimeException("Invalid credentials");
+        }
+    }
+
+    private String getDashboardUrlByRole(Long roleId) {
+        switch (roleId.intValue()) {
+            case 1: 
+                return "/admin/dashboard";
+            case 2: 
+                return "/customer/dashboard";
+            case 3: 
+                return "/delivery/dashboard";
+            default:
+                throw new RuntimeException("Role not recognized");
+        }
+    }
+    
+    @Override
+    public UserInfoDto getUserInfoByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found")); 
+        UserInfo userInfo = userInfoRepository.findByUser(user)
+                .orElseThrow(() -> new RuntimeException("UserInfo not found"));
+
+        UserInfoDto userInfoDto = new UserInfoDto();
+        userInfoDto.setFirstName(userInfo.getFirstName());
+        userInfoDto.setLastName(userInfo.getLastName());
+        userInfoDto.setPhoneNumber(userInfo.getPhoneNumber());
+        userInfoDto.setRoleId(userInfo.getRole());
+
+        return userInfoDto;
+    }
+
+}

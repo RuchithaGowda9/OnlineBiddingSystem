@@ -1,0 +1,31 @@
+package com.crimsonlogic.onlinebiddingsystem.entity;
+
+import com.crimsonlogic.onlinebiddingsystem.util.IdGenerator;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Table(name = "user")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class User {
+
+	@Id
+	private Long user_id;
+	
+	private String email;
+	
+	private String password;
+	
+	@PrePersist
+    public void generateId() {
+        this.user_id = (Long) new IdGenerator().generate(null, this);
+    }
+}

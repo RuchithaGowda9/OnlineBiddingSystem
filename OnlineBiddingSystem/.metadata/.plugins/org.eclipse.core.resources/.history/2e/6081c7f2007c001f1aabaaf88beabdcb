@@ -1,0 +1,32 @@
+package com.crimsonlogic.onlinebiddingsystem.entity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Table(name = "delivery_agent_details")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class DeliveryAgentDetails {
+	
+	@Id
+	private Long deliveryAgentDetails;
+	
+	@ManyToOne
+    @JoinColumn(name = "delivery_agent_id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "assigned_by")
+    private User assignedBy;
+
+    private String deliveryAgencyName;
+	
+}

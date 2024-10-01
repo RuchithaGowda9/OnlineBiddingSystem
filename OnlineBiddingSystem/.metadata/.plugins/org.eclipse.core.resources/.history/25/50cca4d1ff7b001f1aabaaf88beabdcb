@@ -1,0 +1,38 @@
+package com.crimsonlogic.onlinebiddingsystem.entity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Table(name = "order")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Order {
+
+	@Id
+	private Long orderId;
+	
+	@ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
+
+    @ManyToOne
+    @JoinColumn(name = "buyer_id")
+    private User buyer;
+
+    @ManyToOne
+    @JoinColumn(name = "seller_id")
+    private User seller;
+
+    @ManyToOne
+    @JoinColumn(name = "delivery_person_id")
+    private User deliveryPersonId;
+
+    private String status;
+	
+}

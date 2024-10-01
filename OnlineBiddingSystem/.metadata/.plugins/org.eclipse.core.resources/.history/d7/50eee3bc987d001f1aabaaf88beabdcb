@@ -1,0 +1,9 @@
+package com.crimsonlogic.onlinebiddingsystem.config;
+@Configuration
+public class ModelMapperConfig {
+
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
+    }
+}

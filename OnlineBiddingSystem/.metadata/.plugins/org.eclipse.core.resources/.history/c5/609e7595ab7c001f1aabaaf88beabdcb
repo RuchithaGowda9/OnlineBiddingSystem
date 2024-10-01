@@ -1,0 +1,58 @@
+package com.crimsonlogic.onlinebiddingsystem.serviceimpl;
+
+import com.crimsonlogic.onlinebiddingsystem.dto.UserDto;
+import com.crimsonlogic.onlinebiddingsystem.dto.UserInfoDto;
+import com.crimsonlogic.onlinebiddingsystem.entity.Role;
+import com.crimsonlogic.onlinebiddingsystem.entity.RoleName;
+import com.crimsonlogic.onlinebiddingsystem.entity.User;
+import com.crimsonlogic.onlinebiddingsystem.entity.UserInfo;
+import com.crimsonlogic.onlinebiddingsystem.repository.UserRepository;
+import com.crimsonlogic.onlinebiddingsystem.repository.RoleRepository;
+import com.crimsonlogic.onlinebiddingsystem.repository.UserInfoRepository;
+import com.crimsonlogic.onlinebiddingsystem.service.AuthService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class AuthServiceImpl implements AuthService {
+	@Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserInfoRepository userInfoRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Transactional
+    public void register(UserDto userDto, UserInfoDto userInfoDto) {
+        // Create User
+        User user = new User();
+        user.setEmail(userDto.getEmail());
+        user.setPassword(userDto.getPassword());
+        userRepository.save(user); // Save user first
+
+        // Set role as "customer" by default
+        Role role = roleRepository.findByName("customer");
+        if (role == null) {
+            role = new Role();
+            role.setName("customer");
+            roleRepository.save(role); // Save new role if it doesn't exist
+        }
+
+        // Create UserInfo
+        UserInfo userInfo = new UserInfo();
+        userInfo.setFirstName(userInfoDto.getFirstName());
+        userInfo.setLastName(userInfoDto.getLastName());
+        userInfo.setPhoneNumber(userInfoDto.getPhoneNumber());
+        userInfo.setRole(role); // Set the role
+
+        userInfoRepository.save(userInfo); // Save UserInfo
+    }
+
+	@Override
+	public String login(UserDto userDto) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+}

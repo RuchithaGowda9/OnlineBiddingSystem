@@ -1,0 +1,19 @@
+package com.crimsonlogic.onlinebiddingsystem.entity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Table(name = "bid")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Bid {
+
+	
+	private Long bidId;
+	
+}

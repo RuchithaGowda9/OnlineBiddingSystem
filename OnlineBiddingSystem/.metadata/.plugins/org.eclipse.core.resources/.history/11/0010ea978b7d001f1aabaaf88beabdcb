@@ -1,0 +1,29 @@
+import org.springframework.web.bind.annotation.*;
+import javax.servlet.http.HttpSession;
+
+@CrossOrigin
+@RestController
+@RequestMapping("/api/auth")
+public class AuthController {
+
+    @Autowired
+    private AuthService authService;
+
+    @PostMapping("/register")
+    public void register(@RequestBody RegistrationDto registrationDto, HttpSession session) {
+        authService.register(registrationDto.getUser(), registrationDto.getUserInfo());
+        // Store user info in session after registration
+        session.setAttribute("user", registrationDto.getUser());
+        session.setAttribute("userInfo", registrationDto.getUserInfo());
+    }
+
+    @PostMapping("/login")
+    public String login(@RequestBody UserDto userDto, HttpSession session) {
+        String dashboardUrl = authService.login(userDto);
+        // Store user info in session after login
+        UserInfoDto userInfo = authService.getUserInfoByEmail(userDto.getEmail());
+        session.setAttribute("user", userDto);
+        session.setAttribute("userInfo", userInfo);
+        return dashboardUrl;
+    }
+}

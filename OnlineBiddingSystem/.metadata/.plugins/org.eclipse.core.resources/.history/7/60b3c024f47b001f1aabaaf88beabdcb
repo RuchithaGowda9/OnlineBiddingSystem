@@ -1,0 +1,5 @@
+public enum RoleName {
+    ADMIN,
+    CUSTOMER,
+    DELIVERY_PERSON
+}

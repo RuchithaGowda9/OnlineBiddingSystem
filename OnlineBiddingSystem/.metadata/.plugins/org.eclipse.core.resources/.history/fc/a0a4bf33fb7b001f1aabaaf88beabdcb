@@ -1,0 +1,41 @@
+package com.crimsonlogic.onlinebiddingsystem.entity;
+
+import com.crimsonlogic.onlinebiddingsystem.util.IdGenerator;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Table(name = "user_info")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class User_Info {
+	
+	@Id
+	private Long userInfoId;
+	
+	 private String firstName;
+	    private String lastName;
+	    private String phoneNumber;
+
+	    @ManyToOne
+	    @JoinColumn(name = "role_id")
+	    private Role role;
+
+	    // Getters and Setters
+
+	    @PrePersist
+	    public void generateId() {
+	        this.userInfoId = (Long) new IdGenerator().generate(null, this);
+	    }
+	
+
+}

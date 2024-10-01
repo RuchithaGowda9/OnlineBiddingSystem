@@ -1,0 +1,121 @@
+package com.crimsonlogic.onlinebiddingsystem.serviceimpl;
+
+import com.crimsonlogic.onlinebiddingsystem.dto.UserDto;
+import com.crimsonlogic.onlinebiddingsystem.dto.UserInfoDto;
+import com.crimsonlogic.onlinebiddingsystem.entity.Role;
+import com.crimsonlogic.onlinebiddingsystem.entity.RoleName;
+import com.crimsonlogic.onlinebiddingsystem.entity.User;
+import com.crimsonlogic.onlinebiddingsystem.entity.UserInfo;
+import com.crimsonlogic.onlinebiddingsystem.repository.RoleRepository;
+import com.crimsonlogic.onlinebiddingsystem.repository.UserRepository;
+import com.crimsonlogic.onlinebiddingsystem.repository.UserInfoRepository;
+import com.crimsonlogic.onlinebiddingsystem.service.AuthService;
+
+import java.util.Optional;
+
+import org.modelmapper.ModelMapper;
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
+
+@Service
+public class AuthServiceImpl implements AuthService {
+
+    private final UserRepository userRepository;
+    private final UserInfoRepository userInfoRepository;
+    private final RoleRepository roleRepository;
+    private final ModelMapper modelMapper;
+
+    // Constructor injection
+    public AuthServiceImpl(UserRepository userRepository, UserInfoRepository userInfoRepository, RoleRepository roleRepository, ModelMapper modelMapper) {
+        this.userRepository = userRepository;
+        this.userInfoRepository = userInfoRepository;
+        this.roleRepository = roleRepository;
+        this.modelMapper = modelMapper;
+    }
+
+    @Transactional
+    @Override
+    public void register(User user, UserInfo userInfo) {
+        // Save the user first
+        userRepository.save(user);
+
+        // Set the user in UserInfo
+        userInfo.setUser(user);
+        
+        // Fetch the role based on the roleName from UserInfoDto
+        if (userInfo.getRole() != null) {
+            Role role = getRoleByName(userInfo.getRole().getName());
+            userInfo.setRole(role);
+        } else {
+            // Handle the case where role is not set in userInfo
+            throw new RuntimeException("Role must be provided in UserInfo");
+        }
+
+        // Save UserInfo
+        userInfoRepository.save(userInfo);
+    }
+
+
+    @Override
+    public String login(UserDto userDto) {
+        User user = userRepository.findByEmail(userDto.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        if (userDto.getPassword().equals(user.getPassword())) {
+            UserInfo userInfo = userInfoRepository.findByUser(user)
+                    .orElseThrow(() -> new RuntimeException("UserInfo not found"));
+            return getDashboardUrlByRole(userInfo.getRole().getRoleId());
+        } else {
+            throw new RuntimeException("Invalid credentials");
+        }
+    }
+
+    private String getDashboardUrlByRole(Long roleId) {
+        switch (roleId.intValue()) {
+            case 1: 
+                return "/admin/dashboard";
+            case 2: 
+                return "/customer/dashboard";
+            case 3: 
+                return "/delivery/dashboard";
+            default:
+                throw new RuntimeException("Role not recognized");
+        }
+    }
+
+    @Override
+    public UserInfoDto getUserInfoByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        UserInfo userInfo = userInfoRepository.findByUser(user)
+                .orElseThrow(() -> new RuntimeException("UserInfo not found"));
+
+        return modelMapper.map(userInfo, UserInfoDto.class);
+    }
+
+    private Role getRoleByName(RoleName roleName) {
+        return roleRepository.findByName(roleName)
+                .orElseThrow(() -> new RuntimeException("Role not found for name: " + roleName));
+    }
+
+	@Override
+	public boolean validatePassword(String email, String password) {
+	    // Fetch the user by email
+	    Optional<User> user = userRepository.findByEmail(email);
+	    if (user == null) {
+	        return false; // User not found
+	    }
+
+	    // Check if the provided password matches the stored password
+	    return user.getPassword().equals(password);
+	}
+
+
+	@Override
+	public void updatePassword(String email, String newPassword) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+}
