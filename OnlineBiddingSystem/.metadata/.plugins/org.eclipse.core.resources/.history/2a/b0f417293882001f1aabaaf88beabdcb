@@ -1,0 +1,24 @@
+package com.crimsonlogic.onlinebiddingsystem.controller;
+
+import com.crimsonlogic.onlinebiddingsystem.dto.ProductDto;
+import com.crimsonlogic.onlinebiddingsystem.exception.ResourceNotFoundException;
+import com.crimsonlogic.onlinebiddingsystem.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/auth/products")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+public class ProductController {
+
+    @Autowired
+    private ProductService productService;
+
+    @PostMapping("/addproducts")
+    public ResponseEntity<String> addProduct(@RequestBody ProductDto productDto) throws ResourceNotFoundException {
+        productService.addProduct(productDto);
+        return new ResponseEntity<>("Product added successfully!", HttpStatus.CREATED);
+    }
+}

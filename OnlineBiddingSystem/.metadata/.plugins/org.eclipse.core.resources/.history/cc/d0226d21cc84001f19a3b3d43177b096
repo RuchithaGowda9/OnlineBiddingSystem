@@ -1,0 +1,10 @@
+package com.crimsonlogic.onlinebiddingsystem.dto;
+
+import lombok.Data;
+
+@Data
+public class DeliveryAgentDTO {
+	private Long deliveryAgentDetailsId;
+    private Long userId; 
+    private String deliveryAgencyName;
+}

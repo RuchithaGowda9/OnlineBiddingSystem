@@ -1,0 +1,5 @@
+package com.crimsonlogic.onlinebiddingsystem.service;
+
+public interface DeliveryAgentService {
+	List<UserInfo> findDeliveryPersonsByAgencyName(String agencyName);
+}

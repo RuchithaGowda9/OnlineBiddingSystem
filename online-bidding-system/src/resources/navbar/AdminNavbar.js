@@ -1,8 +1,22 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../resources/images/logo.png'; // Adjusted path
+import axios from 'axios';
 
 const AdminNavbar = () => {
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        try {
+            await axios.post('http://localhost:8080/api/auth/logout', {}, { withCredentials: true });
+            // Clear any user data from local storage or context
+            localStorage.removeItem('user'); // Adjust this line based on how you're storing user data
+            navigate('/login'); // Redirect to login page after logout
+        } catch (error) {
+            console.error('Logout failed:', error);
+        }
+    };
+
     return (
         <nav className="navbar navbar-expand-lg" style={{ backgroundColor: '#5c23a6', height: '60px' }}>
             <div className="container d-flex align-items-center">
@@ -31,10 +45,19 @@ const AdminNavbar = () => {
                             </ul>
                         </li>
                         <li className="nav-item">
+                            <Link className="nav-link" to="/admin/all-orders" style={{ background: 'none', border: 'none', color: 'white' }}>All Orders</Link>
+                        </li>
+                        {/* <li className="nav-item">
+                            <Link className="nav-link" to="/admin/all-delivery-persons" style={{ background: 'none', border: 'none', color: 'white' }}>Delivery Persons</Link>
+                        </li> */}
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/admin/all-products" style={{ background: 'none', border: 'none', color: 'white' }}>View All Products</Link>
+                        </li>
+                        <li className="nav-item">
                             <Link className="nav-link" to="/admin/profile" style={{ background: 'none', border: 'none', color: 'white' }}>Profile</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="/logout" style={{ background: 'none', border: 'none', color: 'white' }}>Logout</Link>
+                            <button className="nav-link" onClick={handleLogout} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }}>Logout</button>
                         </li>
                     </ul>
                 </div>

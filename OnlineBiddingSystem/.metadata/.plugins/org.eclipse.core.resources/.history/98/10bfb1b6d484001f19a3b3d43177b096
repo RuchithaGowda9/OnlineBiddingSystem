@@ -1,0 +1,227 @@
+package com.crimsonlogic.onlinebiddingsystem.controller;
+
+import com.crimsonlogic.onlinebiddingsystem.dto.ChangePasswordDto;
+import com.crimsonlogic.onlinebiddingsystem.dto.RegistrationDto;
+import com.crimsonlogic.onlinebiddingsystem.dto.UserDto;
+import com.crimsonlogic.onlinebiddingsystem.dto.UserInfoDto;
+import com.crimsonlogic.onlinebiddingsystem.entity.Role;
+import com.crimsonlogic.onlinebiddingsystem.entity.User;
+import com.crimsonlogic.onlinebiddingsystem.entity.UserInfo;
+import com.crimsonlogic.onlinebiddingsystem.repository.RoleRepository;
+import com.crimsonlogic.onlinebiddingsystem.repository.UserRepository;
+import com.crimsonlogic.onlinebiddingsystem.service.AuthService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.modelmapper.ModelMapper;
+
+import jakarta.servlet.http.HttpSession;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+class AuthControllerTest {
+
+    @InjectMocks
+    private AuthController authController;
+
+    @Mock
+    private AuthService authService;
+
+    @Mock
+    private RoleRepository roleRepository;
+
+    @Mock
+    private UserRepository userRepository;
+
+    @Mock
+    private ModelMapper modelMapper;
+
+    @Mock
+    private HttpSession session;
+
+    private User user;
+    private UserInfo userInfo;
+    private RegistrationDto registrationDto;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        
+        user = new User();
+        user.setEmail("test@example.com");
+
+        userInfo = new UserInfo();
+        userInfo.setRole(new Role());
+
+        registrationDto = new RegistrationDto();
+//        registrationDto.setUser(user);
+//        registrationDto.setUserInfo(userInfo);
+    }
+
+   
+
+    
+
+
+    @Test
+    void getUserInfo_ShouldReturnUserInfo() {
+        // Arrange
+        UserDto userDto = new UserDto();
+        UserInfoDto userInfoDto = new UserInfoDto();
+        when(session.getAttribute("user")).thenReturn(userDto);
+        when(session.getAttribute("userInfo")).thenReturn(userInfoDto);
+
+        // Act
+        ResponseEntity<Map<String, Object>> response = authController.getUserInfo(session);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(userDto, response.getBody().get("user"));
+        assertEquals(userInfoDto, response.getBody().get("userInfo"));
+    }
+
+    @Test
+    void getUserInfo_ShouldReturnUnauthorized() {
+        // Arrange
+        when(session.getAttribute("user")).thenReturn(null);
+        when(session.getAttribute("userInfo")).thenReturn(null);
+
+        // Act
+        ResponseEntity<Map<String, Object>> response = authController.getUserInfo(session);
+
+        // Assert
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    }
+
+    @Test
+    void changePassword_ShouldReturnSuccess() {
+        // Arrange
+        ChangePasswordDto changePasswordDto = new ChangePasswordDto();
+        changePasswordDto.setCurrentPassword("currentPassword");
+        changePasswordDto.setNewPassword("newPassword");
+        UserDto userDto = new UserDto();
+        userDto.setEmail("test@example.com");
+        
+        when(session.getAttribute("user")).thenReturn(userDto);
+        when(authService.validatePassword("test@example.com", "currentPassword")).thenReturn(true);
+
+        // Act
+        ResponseEntity<String> response = authController.changePassword(changePasswordDto, session);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Password changed successfully", response.getBody());
+    }
+
+    @Test
+    void changePassword_ShouldReturnUnauthorized() {
+        // Arrange
+        when(session.getAttribute("user")).thenReturn(null);
+
+        // Act
+        ResponseEntity<String> response = authController.changePassword(new ChangePasswordDto(), session);
+
+        // Assert
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    }
+
+    @Test
+    void changePassword_ShouldReturnForbidden() {
+        // Arrange
+        ChangePasswordDto changePasswordDto = new ChangePasswordDto();
+        changePasswordDto.setCurrentPassword("wrongPassword");
+        UserDto userDto = new UserDto();
+        userDto.setEmail("test@example.com");
+        
+        when(session.getAttribute("user")).thenReturn(userDto);
+        when(authService.validatePassword("test@example.com", "wrongPassword")).thenReturn(false);
+
+        // Act
+        ResponseEntity<String> response = authController.changePassword(changePasswordDto, session);
+
+        // Assert
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Current password is incorrect", response.getBody());
+    }
+
+    @Test
+    void getWalletBalance_ShouldReturnBalance() {
+        // Arrange
+        UserDto userDto = new UserDto();
+        userDto.setEmail("test@example.com");
+        when(session.getAttribute("user")).thenReturn(userDto);
+        when(authService.getWalletBalance("test@example.com")).thenReturn(100.0);
+
+        // Act
+        ResponseEntity<Double> response = authController.getWalletBalance(session);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(100.0, response.getBody());
+    }
+
+    @Test
+    void getWalletBalance_ShouldReturnUnauthorized() {
+        // Arrange
+        when(session.getAttribute("user")).thenReturn(null);
+
+        // Act
+        ResponseEntity<Double> response = authController.getWalletBalance(session);
+
+        // Assert
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    }
+
+    @Test
+    void rechargeWallet_ShouldReturnSuccess() {
+        // Arrange
+        Map<String, Double> requestBody = new HashMap<>();
+        requestBody.put("amount", 50.0);
+        UserDto userDto = new UserDto();
+        userDto.setEmail("test@example.com");
+        when(session.getAttribute("user")).thenReturn(userDto);
+
+        // Act
+        ResponseEntity<String> response = authController.rechargeWallet(requestBody, session);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Wallet recharged successfully!", response.getBody());
+    }
+
+    @Test
+    void rechargeWallet_ShouldReturnUnauthorized() {
+        // Arrange
+        when(session.getAttribute("user")).thenReturn(null);
+        Map<String, Double> requestBody = new HashMap<>();
+        requestBody.put("amount", 50.0);
+
+        // Act
+        ResponseEntity<String> response = authController.rechargeWallet(requestBody, session);
+
+        // Assert
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    }
+
+    @Test
+    void logout_ShouldReturnSuccess() {
+        // Act
+        ResponseEntity<String> response = authController.logout(session);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Logged out successfully", response.getBody());
+        verify(session, times(1)).invalidate();
+    }
+}

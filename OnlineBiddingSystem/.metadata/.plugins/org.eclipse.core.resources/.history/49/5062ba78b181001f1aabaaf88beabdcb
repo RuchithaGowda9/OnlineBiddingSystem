@@ -1,0 +1,26 @@
+package com.crimsonlogic.onlinebiddingsystem.controller;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import com.crimsonlogic.onlinebiddingsystem.entity.Address;
+import com.crimsonlogic.onlinebiddingsystem.service.AddressService;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/auth/addresses")
+public class AddressController {
+
+    @Autowired
+    private AddressService addressService;
+
+    @PostMapping
+    public Address addAddress(@RequestBody Address address) {
+        return addressService.addAddress(address);
+    }
+
+    @GetMapping("/user")
+    public List<Address> getAddressesByUser(@RequestParam Long userId) {
+        return addressService.getAddressesByUser(userId);
+    }
+}

@@ -2,6 +2,7 @@ package com.crimsonlogic.onlinebiddingsystem.entity;
 
 import com.crimsonlogic.onlinebiddingsystem.util.IdGenerator;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -12,6 +13,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author Ruchitha
+ *
+ */
 @Entity
 @Table(name = "delivery_agent_details")
 @Data
@@ -26,10 +31,7 @@ public class DeliveryAgentDetails {
     @JoinColumn(name = "delivery_agent_id")
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "assigned_by")
-    private User assignedBy;
-
+	@Column(name = "delivery_agency_name", length = 20)
     private String deliveryAgencyName;
     
     @PrePersist

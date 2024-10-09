@@ -1,0 +1,48 @@
+package com.crimsonlogic.onlinebiddingsystem.serviceimpl;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.crimsonlogic.onlinebiddingsystem.dto.DeliveryAgentDTO;
+import com.crimsonlogic.onlinebiddingsystem.entity.DeliveryAgentDetails;
+import com.crimsonlogic.onlinebiddingsystem.entity.User;
+import com.crimsonlogic.onlinebiddingsystem.entity.UserInfo;
+import com.crimsonlogic.onlinebiddingsystem.repository.DeliveryAgentDetailsRepository;
+import com.crimsonlogic.onlinebiddingsystem.repository.DeliveryAgentRepository;
+import com.crimsonlogic.onlinebiddingsystem.repository.UserInfoRepository;
+import com.crimsonlogic.onlinebiddingsystem.service.DeliveryAgentDetailsService;
+import com.crimsonlogic.onlinebiddingsystem.service.DeliveryAgentService;
+
+@Service
+public class DeliveryAgentServiceImpl implements DeliveryAgentService {
+
+    @Autowired
+    private DeliveryAgentRepository deliveryAgentRepository;
+
+    @Autowired
+    private UserInfoRepository userInfoRepository;
+
+    @Override
+    public List<UserInfo> findDeliveryPersonsByAgencyName(String agencyName) {
+        List<DeliveryAgentDetails> deliveryAgents = deliveryAgentRepository.findByDeliveryAgencyName(agencyName);
+        List<UserInfo> deliveryPersons = new ArrayList<>();
+        
+        for (DeliveryAgentDetails agent : deliveryAgents) {
+            User user = agent.getUser(); // Get User from DeliveryAgentDetails
+            
+            // Fetch UserInfo using Optional
+            Optional<UserInfo> optionalUserInfo = userInfoRepository.findByUser(user);
+            
+            // If UserInfo is present, add it to the list
+            optionalUserInfo.ifPresent(deliveryPersons::add);
+        }
+        return deliveryPersons;
+    }
+}
+
+

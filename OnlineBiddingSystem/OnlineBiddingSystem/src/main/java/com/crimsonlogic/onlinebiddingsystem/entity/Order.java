@@ -13,6 +13,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author Ruchitha
+ *
+ */
 @Entity
 @Table(name = "orders")
 @Data
@@ -41,6 +45,9 @@ public class Order {
 
     @Column(name = "order_status", length = 20, nullable = false)
     private String orderStatus;
+    
+    @Column(name = "bid_amount", length = 10)
+    private Float bidAmount;
     
     @PrePersist
 	public void generateId() {

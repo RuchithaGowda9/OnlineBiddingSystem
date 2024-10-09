@@ -11,13 +11,17 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author Ruchitha
+ *
+ */
 @Entity
 @Table(name = "users")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
-
+	
 	@Id
 	private Long userId;
 	
@@ -31,4 +35,10 @@ public class User {
     public void generateId() {
         this.userId = (Long) new IdGenerator().generate(null, this);
     }
+	
+	public User(Long id) {
+        this.userId = id;
+    }
+	
+	
 }

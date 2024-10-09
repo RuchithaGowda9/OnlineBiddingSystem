@@ -1,0 +1,28 @@
+package com.crimsonlogic.onlinebiddingsystem.serviceimpl;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.crimsonlogic.onlinebiddingsystem.dto.DeliveryAgentDTO;
+import com.crimsonlogic.onlinebiddingsystem.repository.DeliveryAgentDetailsRepository;
+import com.crimsonlogic.onlinebiddingsystem.service.DeliveryAgentDetailsService;
+
+@Service
+public class DeliveryAgentServiceImpl implements DeliveryAgentService {
+
+    @Autowired
+    private DeliveryAgentRepository deliveryAgentRepository;
+
+    @Override
+    public List<UserInfo> findDeliveryPersonsByAgencyName(String agencyName) {
+        List<DeliveryAgentDetails> deliveryAgents = deliveryAgentRepository.findByDeliveryAgencyName(agencyName);
+        List<UserInfo> deliveryPersons = new ArrayList<>();
+        for (DeliveryAgentDetails agent : deliveryAgents) {
+            deliveryPersons.add(agent.getUser().getUserInfo());
+        }
+        return deliveryPersons;
+    }
+}

@@ -1,0 +1,28 @@
+package com.crimsonlogic.onlinebiddingsystem.serviceimpl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.crimsonlogic.onlinebiddingsystem.dto.OrderDTO;
+import com.crimsonlogic.onlinebiddingsystem.entity.Order;
+import com.crimsonlogic.onlinebiddingsystem.entity.Product;
+import com.crimsonlogic.onlinebiddingsystem.entity.User;
+import com.crimsonlogic.onlinebiddingsystem.repository.OrderRepository;
+import com.crimsonlogic.onlinebiddingsystem.service.OrderService;
+
+@Service
+public class OrderServiceImpl implements OrderService {
+    @Autowired
+    private OrderRepository orderRepository;
+
+    @Autowired
+    private OrderRepository orderRepository;
+
+    @Override
+    public Order createOrder(Order order) {
+        // Optionally add any business logic here
+        return orderRepository.save(order);
+    }
+
+
+}

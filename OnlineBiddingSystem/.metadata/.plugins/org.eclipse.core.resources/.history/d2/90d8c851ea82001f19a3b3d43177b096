@@ -1,0 +1,14 @@
+package com.crimsonlogic.onlinebiddingsystem.service;
+
+import java.util.List;
+
+import com.crimsonlogic.onlinebiddingsystem.entity.Bid;
+import com.crimsonlogic.onlinebiddingsystem.entity.Product;
+
+public interface BidService {
+
+	Bid placeBid(Long productId, Bid bid); 
+
+	List<Bid> getBidsByProductId(Long productId);
+
+}

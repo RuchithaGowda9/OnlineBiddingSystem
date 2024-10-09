@@ -19,6 +19,14 @@ import ViewCategories from './components/admin/ViewCategories';
 import SessionExpired from './utils/SessionExpired';
 import UpdateCategory from './components/admin/UpdateCategory';
 import BuyerProfile from './components/customer/BuyerProfile';
+import SellerProfile from './components/customer/SellerProfile';
+import ProductDetail from './components/customer/ProductDetail';
+import DeliveryPersonDashboard from './components/dashboards/DeliveryPersonDashboard';
+import DeliveryPersonNavbar from './resources/navbar/DeliveryPersonNavbar';
+import DeliveryProfile from './components/delivery/DeliveryProfile';
+import DeliveryOrders from './components/delivery/DeliveryOrders';
+import AllOrders from './components/admin/AllOrders';
+import AllProducts from './components/admin/AllProducts';
 
 axios.defaults.withCredentials = true;
 
@@ -28,13 +36,19 @@ const App = () => {
     return (
         <div className="d-flex flex-column min-vh-100"> 
             {location.pathname.startsWith('/admin') ? <AdminNavbar /> : 
-             location.pathname.startsWith('/customer') ? <CustomerNavbar/> : <Navbar />}
+             location.pathname.startsWith('/customer') ? <CustomerNavbar/> :
+             location.pathname.startsWith('/delivery') ? <DeliveryPersonNavbar/> : <Navbar />}
             <div className="container flex-grow-1"> {/* Main content area */}
                 <Routes>
                     <Route path="/register" element={<Register role = "CUSTOMER"/>} />
                     <Route path="/admin/register" element={<Register role="ADMIN" />}/>
                     <Route path="/admin/add-category" element={<AddCategory />} />
+                    <Route path="/delivery/dashboard" element={< DeliveryPersonDashboard/>} />
+                    <Route path="/delivery/profile" element={< DeliveryProfile/>} />
+                    <Route path="/delivery/my-orders" element={< DeliveryOrders/>} />
                     <Route path="/admin/view-categories" element={<ViewCategories />} />
+                    <Route path="/admin/all-orders" element={<AllOrders/>} />
+                    <Route path="/admin/all-products" element={<AllProducts/>} />
                     <Route path="/admin/update-category/:categoryId" element={<UpdateCategory/>} />
                     <Route path="/session-expired" element={<SessionExpired />} />
                     <Route path="/login" element={<Login />} />
@@ -42,6 +56,8 @@ const App = () => {
                     <Route path="/admin/dashboard" element={<AdminDashboard />} />
                     <Route path="/customer/dashboard" element={<CustomerDashboard />} />
                     <Route path="/customer/buyers-profile" element={<BuyerProfile/>} />
+                    <Route path="/customer/sellers-profile" element={<SellerProfile/>} />
+                    <Route path="/customer/productdetail/:productId" element={<ProductDetail />} />
                     <Route path="/admin/profile" element={<AdminProfile />} />
                 </Routes>
             </div>

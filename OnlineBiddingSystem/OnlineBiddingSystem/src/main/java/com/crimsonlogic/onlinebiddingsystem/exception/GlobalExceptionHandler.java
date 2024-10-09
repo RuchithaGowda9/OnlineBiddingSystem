@@ -30,4 +30,10 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(err, HttpStatus.CONFLICT);
     }
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorMessage> handleResourceNotFoundException(ResourceNotFoundException e, WebRequest request) {
+        ErrorMessage err = new ErrorMessage(HttpStatus.NOT_FOUND.value(), LocalDateTime.now(), e.getMessage(),
+                request.getDescription(true));
+        return new ResponseEntity<>(err, HttpStatus.NOT_FOUND);
+    }
 }

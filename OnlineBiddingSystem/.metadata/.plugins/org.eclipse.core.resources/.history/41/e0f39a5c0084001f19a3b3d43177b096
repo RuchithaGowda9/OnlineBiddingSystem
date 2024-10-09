@@ -1,0 +1,4 @@
+package com.crimsonlogic.onlinebiddingsystem.repository;
+@Repository
+public interface DeliveryAgentDetailsRepository extends JpaRepository<DeliveryAgentDetails, Long> {
+}

@@ -1,5 +1,0 @@
-package com.crimsonlogic.onlinebiddingsystem.service;
-
-public interface UserService {
-	 public boolean updateUserInfo(UserInfoDto userInfoDto)
-}

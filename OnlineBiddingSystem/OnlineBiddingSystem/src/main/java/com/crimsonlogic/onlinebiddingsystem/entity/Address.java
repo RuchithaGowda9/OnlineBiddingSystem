@@ -13,6 +13,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author Ruchitha
+ *
+ */
 @Entity
 @Table(name = "customer_address")
 @Data

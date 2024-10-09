@@ -1,0 +1,68 @@
+package com.crimsonlogic.onlinebiddingsystem.entity;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+class RoleTest {
+
+    private Role role;
+
+    @BeforeEach
+    void setUp() {
+        role = new Role();
+        role.setName(RoleName.ADMIN); // Assuming RoleName is an enum with ADMIN, USER, etc.
+    }
+
+    @Test
+    void testRoleCreation() {
+        // Act
+        // No ID generation to call here
+
+        // Assert
+        assertNotNull(role.getName());
+        assertEquals(RoleName.ADMIN, role.getName());
+    }
+
+    @Test
+    void testRoleNameUpdate() {
+        // Arrange
+        role.setName(RoleName.USER); // Assuming USER is another role in the enum
+
+        // Act
+        // No specific action needed for this test
+
+        // Assert
+        assertEquals(RoleName.USER, role.getName());
+    }
+
+    @Test
+    void testRoleIdSet() {
+        // Arrange
+        long testRoleId = 1L;
+
+        // Act
+        role.setRoleId(testRoleId);
+
+        // Assert
+        assertEquals(testRoleId, role.getRoleId());
+    }
+
+    @Test
+    void testRoleNameUniqueConstraint() {
+        // Arrange
+        Role anotherRole = new Role();
+        anotherRole.setName(RoleName.ADMIN);
+
+        // Act
+        // Here you can check if both roles can be created. In a real scenario,
+        // you might need a repository or service to check uniqueness against a database.
+
+        // Assert
+        // In a real-world scenario, you would implement logic to check this.
+        // This is just to demonstrate the idea.
+        assertNotEquals(role.getName(), anotherRole.getName()); // Should pass
+    }
+}

@@ -1,0 +1,47 @@
+package com.crimsonlogic.onlinebiddingsystem.controller;
+
+import com.crimsonlogic.onlinebiddingsystem.dto.ProductDto;
+import com.crimsonlogic.onlinebiddingsystem.exception.ResourceNotFoundException;
+import com.crimsonlogic.onlinebiddingsystem.service.ProductService;
+
+import java.time.LocalDateTime;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+@RestController
+@RequestMapping("/api/auth/products")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+public class ProductController {
+
+    @Autowired
+    private ProductService productService;
+
+    @PostMapping("/addproducts/{sellerId}")
+    public ResponseEntity<String> addProduct(
+            @PathVariable Long sellerId, // Take sellerId as a path variable
+            @RequestParam("name") String name,
+            @RequestParam("askingPrice") Double askingPrice,
+            @RequestParam("endTime") LocalDateTime endTime,
+            @RequestParam("description") String description,
+            @RequestParam("categoryId") Long categoryId,
+            @RequestParam("image") MultipartFile image) throws ResourceNotFoundException {
+
+        ProductDto productDto = new ProductDto();
+        productDto.setName(name);
+        productDto.setAskingPrice(askingPrice);
+        productDto.setEndTime(endTime);
+        productDto.setDescription(description);
+        productDto.setCategoryId(categoryId);
+        productDto.setSellerId(sellerId); // Use the path variable
+        productDto.setImage(image);
+
+        productService.addProduct(productDto);
+
+        return new ResponseEntity<>("Product added successfully!", HttpStatus.CREATED);
+    }
+
+}

@@ -1,0 +1,128 @@
+package com.crimsonlogic.onlinebiddingsystem.controller;
+
+import com.crimsonlogic.onlinebiddingsystem.dto.CategoryDto;
+import com.crimsonlogic.onlinebiddingsystem.service.CategoryService;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+public class CategoryControllerTest {
+
+    @InjectMocks
+    private CategoryController categoryController;
+
+    @Mock
+    private CategoryService categoryService;
+
+    @BeforeMethod
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    public void addCategory_ShouldReturnOkResponse() {
+        // Arrange
+        CategoryDto categoryDto = new CategoryDto();
+        categoryDto.setName("Test Category");
+
+        // Act
+        ResponseEntity<String> response = categoryController.addCategory(categoryDto);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Category added successfully.", response.getBody());
+        verify(categoryService, times(1)).addCategory(categoryDto);
+    }
+
+    @Test
+    public void getAllCategories_ShouldReturnCategories() {
+        // Arrange
+        List<CategoryDto> categories = new ArrayList<>();
+        categories.add(new CategoryDto());
+        when(categoryService.getAllCategories()).thenReturn(categories);
+
+        // Act
+        ResponseEntity<List<CategoryDto>> response = categoryController.getAllCategories();
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(categories, response.getBody());
+        verify(categoryService, times(1)).getAllCategories();
+    }
+
+    @Test
+    public void updateCategoryStatus_ShouldReturnOkResponse() {
+        // Arrange
+        Long categoryId = 1L;
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("status", "active");
+
+        // Act
+        ResponseEntity<String> response = categoryController.updateCategoryStatus(categoryId, requestBody);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Category status updated successfully.", response.getBody());
+        verify(categoryService, times(1)).updateCategoryStatus(categoryId, "active");
+    }
+
+    @Test
+    public void getActiveCategories_ShouldReturnActiveCategories() {
+        // Arrange
+        List<CategoryDto> activeCategories = new ArrayList<>();
+        activeCategories.add(new CategoryDto());
+        when(categoryService.getActiveCategories()).thenReturn(activeCategories);
+
+        // Act
+        ResponseEntity<List<CategoryDto>> response = categoryController.getActiveCategories();
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(activeCategories, response.getBody());
+        verify(categoryService, times(1)).getActiveCategories();
+    }
+
+    @Test
+    public void getCategoryById_ShouldReturnCategory() {
+        // Arrange
+        Long categoryId = 1L;
+        CategoryDto categoryDto = new CategoryDto();
+        when(categoryService.getCategoryById(categoryId)).thenReturn(categoryDto);
+
+        // Act
+        ResponseEntity<CategoryDto> response = categoryController.getCategoryById(categoryId);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(categoryDto, response.getBody());
+        verify(categoryService, times(1)).getCategoryById(categoryId);
+    }
+
+    @Test
+    public void updateCategory_ShouldReturnOkResponse() {
+        // Arrange
+        Long categoryId = 1L;
+        CategoryDto categoryDto = new CategoryDto();
+        categoryDto.setName("Updated Category");
+
+        // Act
+        ResponseEntity<String> response = categoryController.updateCategory(categoryId, categoryDto);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Category updated successfully.", response.getBody());
+        verify(categoryService, times(1)).updateCategory(categoryId, categoryDto);
+    }
+}

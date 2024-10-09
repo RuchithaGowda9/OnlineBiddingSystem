@@ -1,0 +1,30 @@
+package com.crimsonlogic.onlinebiddingsystem.serviceimpl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.crimsonlogic.onlinebiddingsystem.dto.DeliveryAgentDTO;
+import com.crimsonlogic.onlinebiddingsystem.repository.DeliveryAgentDetailsRepository;
+import com.crimsonlogic.onlinebiddingsystem.service.DeliveryAgentDetailsService;
+
+@Service
+public class DeliveryAgentDetailsServiceImpl implements DeliveryAgentDetailsService {
+    @Autowired
+    private DeliveryAgentDetailsRepository deliveryAgentDetailsRepository;
+
+    @Override
+    public List<DeliveryAgentDTO> getAllDeliveryAgents() {
+        return deliveryAgentDetailsRepository.findAll()
+            .stream()
+            .map(agent -> {
+                DeliveryAgentDTO dto = new DeliveryAgentDTO();
+                dto.setDeliveryAgentDetailsId(agent.getDeliveryAgentDetailsId());
+                dto.setUserId(agent.getUser().getUserId());
+                dto.setDeliveryAgencyName(agent.getDeliveryAgencyName());
+                return dto;
+            })
+            .collect(Collectors.toList());
+    }
+}

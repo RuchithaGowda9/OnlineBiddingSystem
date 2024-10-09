@@ -1,0 +1,14 @@
+package com.crimsonlogic.onlinebiddingsystem.dto;
+
+import lombok.Data;
+
+@Data
+public class ProductDto {
+    private Long productId;
+    private String name;
+    private Double askingPrice;
+    private LocalDateTime endTime;
+    private String description;
+    private Long categoryId; // New field
+    private Long sellerId;
+}

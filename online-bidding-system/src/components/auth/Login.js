@@ -70,7 +70,9 @@ const Login = () => {
                         width: '400px', 
                         padding: '20px',
                         borderRadius: '10px', 
-                        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.5)' 
+                        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.5)',
+                        height: 'auto', // Adjust height if needed
+                        maxHeight: '400px', // Set a max height to limit the card size
                     }}>
                         <div className="card-body">
                             <h2 className="card-title">Login</h2>

@@ -1,0 +1,59 @@
+package com.crimsonlogic.onlinebiddingsystem.serviceimpl;
+
+import com.crimsonlogic.onlinebiddingsystem.dto.ProductDto;
+import com.crimsonlogic.onlinebiddingsystem.entity.Product;
+import com.crimsonlogic.onlinebiddingsystem.entity.ProductCategory;
+import com.crimsonlogic.onlinebiddingsystem.entity.User;
+import com.crimsonlogic.onlinebiddingsystem.exception.ResourceNotFoundException;
+import com.crimsonlogic.onlinebiddingsystem.repository.ProductRepository;
+import com.crimsonlogic.onlinebiddingsystem.repository.CategoryRepository;
+import com.crimsonlogic.onlinebiddingsystem.repository.UserRepository;
+import com.crimsonlogic.onlinebiddingsystem.service.ProductService;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+@Service
+public class ProductServiceImpl implements ProductService {
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+    
+    @Autowired
+    private ImageStorageService imageStorageService;
+
+    @Autowired
+    private ModelMapper modelMapper;
+
+    @Override
+    public void addProduct(ProductDto productDto) {
+        Product product = modelMapper.map(productDto, Product.class);
+
+        // Fetch category and seller
+        ProductCategory category = categoryRepository.findById(productDto.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+
+        User seller = userRepository.findById(productDto.getSellerId())
+                .orElseThrow(() -> new ResourceNotFoundException("Seller not found"));
+
+        product.setCategory(category);
+        product.setSellerId(seller);
+        product.setProductStatus("active");
+
+        // Handle image upload
+        if (productDto.getImage() != null && !productDto.getImage().isEmpty()) {
+            String imagePath = imageStorageService.saveImage(productDto.getImage());
+            product.setImage(imagePath); // Store the path in the database
+        }
+
+        productRepository.save(product);
+    }
+
+}

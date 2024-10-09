@@ -1,7 +1,0 @@
-package com.crimsonlogic.onlinebiddingsystem.service;
-
-import com.crimsonlogic.onlinebiddingsystem.dto.CategoryDto;
-
-public interface ICategoryService {
-    void addCategory(CategoryDto categoryDto);
-}

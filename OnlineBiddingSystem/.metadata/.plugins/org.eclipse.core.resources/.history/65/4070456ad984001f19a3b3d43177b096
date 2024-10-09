@@ -1,0 +1,88 @@
+package com.crimsonlogic.onlinebiddingsystem.serviceimpl;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+class ImageStorageServiceTest {
+
+    @InjectMocks
+    private ImageStorageService imageStorageService;
+
+    @Mock
+    private MultipartFile imageFile;
+
+    @Value("${image.upload.dir}")
+    private String uploadDir = "test/upload/dir"; // Set a test directory
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        imageStorageService = new ImageStorageService();
+        imageStorageService.uploadDir = uploadDir; // Injecting the test upload directory
+    }
+
+    @Test
+    void testSaveImage_Success() throws IOException {
+        // Arrange
+        String originalFilename = "testImage.png";
+        when(imageFile.getOriginalFilename()).thenReturn(originalFilename);
+        when(imageFile.transferTo(any(File.class))).thenAnswer(invocation -> {
+            // Simulate successful file transfer
+            return null;
+        });
+
+        // Act
+        String result = imageStorageService.saveImage(imageFile);
+
+        // Assert
+        assertNotNull(result);
+        assertTrue(result.startsWith(String.valueOf(System.currentTimeMillis())));
+        verify(imageFile, times(1)).transferTo(any(File.class));
+    }
+
+    @Test
+    void testSaveImage_DirectoryCreation() throws IOException {
+        // Arrange
+        String originalFilename = "testImage.png";
+        when(imageFile.getOriginalFilename()).thenReturn(originalFilename);
+        when(imageFile.transferTo(any(File.class))).thenAnswer(invocation -> {
+            return null; // Simulate successful transfer
+        });
+
+        // Act
+        String result = imageStorageService.saveImage(imageFile);
+
+        // Assert
+        File directory = new File(uploadDir);
+        assertTrue(directory.exists()); // Ensure the directory was created
+        verify(imageFile, times(1)).transferTo(any(File.class));
+    }
+
+    @Test
+    void testSaveImage_Failure() throws IOException {
+        // Arrange
+        String originalFilename = "testImage.png";
+        when(imageFile.getOriginalFilename()).thenReturn(originalFilename);
+        doThrow(new IOException("Failed to write file")).when(imageFile).transferTo(any(File.class));
+
+        // Act & Assert
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            imageStorageService.saveImage(imageFile);
+        });
+
+        assertEquals("Failed to save image: Failed to write file", exception.getMessage());
+    }
+}

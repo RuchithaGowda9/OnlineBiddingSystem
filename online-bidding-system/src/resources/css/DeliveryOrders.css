@@ -1,0 +1,34 @@
+.filter-dropdown {
+    width: 300px; /* Increased width */
+    border: 1px solid #5c23a6; /* Filter border color */
+}
+
+.dropdown-toggle.custom {
+    background-color: #5c23a6; /* Update button color */
+    color: white; /* Text color */
+    border: 1px solid #5c23a6; /* Border color */
+}
+
+.dropdown-item {
+    color: #5c23a6; /* Dropdown item color */
+}
+
+.dropdown-item:hover {
+    background-color: rgba(92, 35, 166, 0.1); /* Light hover background */
+}
+
+.card {
+    border: 1px solid #5c23a6; /* Card border color */
+}
+
+.btn-primary {
+    background-color: #5c23a6; /* Color for disabled button */
+    border: 1px solid #5c23a6; /* Button border color */
+    color: white; /* Text color */
+}
+
+.btn-primary:disabled {
+    background-color: #5c23a6; /* Keep color consistent when disabled */
+    border: 1px solid #5c23a6; /* Keep border consistent when disabled */
+}
+

@@ -1,0 +1,47 @@
+package com.crimsonlogic.onlinebiddingsystem.service.impl;
+
+import com.crimsonlogic.onlinebiddingsystem.dto.ProductDto;
+import com.crimsonlogic.onlinebiddingsystem.entity.Product;
+import com.crimsonlogic.onlinebiddingsystem.entity.ProductCategory;
+import com.crimsonlogic.onlinebiddingsystem.entity.User;
+import com.crimsonlogic.onlinebiddingsystem.repository.ProductRepository;
+import com.crimsonlogic.onlinebiddingsystem.repository.CategoryRepository;
+import com.crimsonlogic.onlinebiddingsystem.repository.UserRepository;
+import com.crimsonlogic.onlinebiddingsystem.service.ProductService;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ProductServiceImpl implements ProductService {
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
+
+    @Override
+    public void addProduct(ProductDto productDto) {
+        Product product = modelMapper.map(productDto, Product.class);
+
+        // Fetch category and seller
+        ProductCategory category = categoryRepository.findById(productDto.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+
+        User seller = userRepository.findById(productDto.getSellerId())
+                .orElseThrow(() -> new ResourceNotFoundException("Seller not found"));
+
+        product.setCategory(category);
+        product.setSellerId(seller);
+        product.setProductStatus("active"); // Assuming default status for a new product
+
+        productRepository.save(product);
+    }
+}

@@ -1,0 +1,30 @@
+package com.crimsonlogic.onlinebiddingsystem.controller;
+
+import com.crimsonlogic.onlinebiddingsystem.entity.Bid;
+import com.crimsonlogic.onlinebiddingsystem.service.BidService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+@RestController
+@RequestMapping("/api/auth")
+public class BidController {
+
+    @Autowired
+    private BidService bidService;
+
+    @PostMapping("/bids")
+    public ResponseEntity<Bid> placeBid(@RequestBody Bid bid) {
+        Bid savedBid = bidService.placeBid(bid);
+        return ResponseEntity.ok(savedBid);
+    }
+
+    @GetMapping("/product/{productId}")
+    public List<Bid> getBidsByProduct(@PathVariable Long productId) {
+        // You would typically fetch the product first to ensure it exists.
+        Product product = // fetch product by productId logic
+        return bidService.getBidsByProduct(product);
+    }
+}

@@ -1,0 +1,7 @@
+package com.crimsonlogic.onlinebiddingsystem.service;
+
+import com.crimsonlogic.onlinebiddingsystem.dto.OrderDto;
+
+public interface OrderService {
+    void createOrder(OrderDto orderDTO);
+}

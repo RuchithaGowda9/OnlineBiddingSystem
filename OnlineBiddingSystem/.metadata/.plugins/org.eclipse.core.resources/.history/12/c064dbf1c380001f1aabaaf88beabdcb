@@ -1,0 +1,5 @@
+package com.crimsonlogic.onlinebiddingsystem.serviceimpl;
+
+public class AddressServiceImpl {
+
+}

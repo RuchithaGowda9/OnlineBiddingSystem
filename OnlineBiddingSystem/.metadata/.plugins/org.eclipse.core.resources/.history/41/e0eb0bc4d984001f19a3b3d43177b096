@@ -1,0 +1,15 @@
+package com.crimsonlogic.onlinebiddingsystem.serviceimpl;
+
+import org.springframework.stereotype.Service;
+
+import com.crimsonlogic.onlinebiddingsystem.entity.UserInfo;
+import com.crimsonlogic.onlinebiddingsystem.service.UserInfoService;
+@Service
+public class UserInfoServiceImpl implements UserInfoService{
+
+	@Override
+	public UserInfo getUserInfoByUserId(Long userId) {
+		return null;
+	}
+
+}

@@ -1,7 +1,0 @@
-package com.crimsonlogic.onlinebiddingsystem.service;
-
-
-public interface WalletService {
-	//Optional<Wallet> getWalletByUserId(Long userId);
-
-}

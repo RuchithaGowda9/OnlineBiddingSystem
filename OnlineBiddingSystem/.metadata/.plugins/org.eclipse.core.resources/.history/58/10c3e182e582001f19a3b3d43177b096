@@ -1,0 +1,43 @@
+import com.crimsonlogic.onlinebiddingsystem.entity.Bid;
+import com.crimsonlogic.onlinebiddingsystem.entity.Product;
+import com.crimsonlogic.onlinebiddingsystem.entity.User;
+import com.crimsonlogic.onlinebiddingsystem.service.BidService;
+import com.crimsonlogic.onlinebiddingsystem.service.ProductService; // Assuming you have a ProductService
+import com.crimsonlogic.onlinebiddingsystem.service.UserService; // Assuming you have a UserService
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+@RestController
+@RequestMapping("/api/auth")
+public class BidController {
+
+    @Autowired
+    private BidService bidService;
+
+    @Autowired
+    private ProductService productService; // Service to fetch product
+
+    @Autowired
+    private UserService userService; // Service to fetch the current user
+
+    @PostMapping("/bids")
+    public ResponseEntity<Bid> placeBid(@RequestBody Bid bid) {
+        // Fetch the product and user based on their IDs
+        Product product = productService.getProductById(bid.getProduct().getProductId());
+        User user = userService.getCurrentUser(); // Implement this method to get the logged-in user
+
+        if (product == null || user == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        // Set the necessary fields
+        bid.setProduct(product);
+        bid.setBidderId(user);
+        bid.setBidTime(LocalDateTime.now());
+
+        Bid savedBid = bidService.placeBid(bid);
+        return ResponseEntity.ok(savedBid);
+    }
+}

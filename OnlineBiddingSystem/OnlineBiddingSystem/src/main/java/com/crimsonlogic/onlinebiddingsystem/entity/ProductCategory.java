@@ -11,6 +11,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author Ruchitha
+ *
+ */
 @Entity
 @Table(name = "product_category")
 @Data

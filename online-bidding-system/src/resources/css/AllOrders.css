@@ -1,0 +1,21 @@
+
+
+.table {
+    margin-top: 20px; /* Spacing above the table */
+}
+
+th {
+    text-align: center; /* Centered headers */
+}
+
+td {
+    text-align: center; /* Centered cells */
+}
+
+input, select {
+    transition: border-color 0.3s; /* Smooth transition for border color */
+}
+
+input:focus, select:focus {
+    border-color: #5c23a6; /* Focus color for input and select */
+}

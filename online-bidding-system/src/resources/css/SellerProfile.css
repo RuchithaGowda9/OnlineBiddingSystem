@@ -1,0 +1,19 @@
+/* SellerProfile.css */
+.custom-select {
+    background-color: #5c23a6; /* Change to your desired color */
+    color: #ffffff; /* Set text color to white for visibility */
+}
+
+.custom-select option {
+    background-color: #5c23a6; /* Same background color for options */
+    color: #ffffff; /* Text color for options */
+}
+
+.custom-select option:hover {
+    background-color: #4b1e8a; /* Darker shade on hover */
+}
+.fixed-image {
+    width: 100%; /* Adjust width as needed */
+    height: 200px; /* Set a fixed height */
+    object-fit: cover; /* Ensure the image covers the area without distortion */
+}

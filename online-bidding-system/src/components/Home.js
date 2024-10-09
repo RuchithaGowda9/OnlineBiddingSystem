@@ -1,8 +1,8 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import clothingImage from '../resources/images/clothing.jpg'; // Adjust with the actual image names
-import furnitureImage from '../resources/images/furniture.jpg'; // Adjust with the actual image names
-import electronicsImage from '../resources/images/electronics.jpg'; // Adjust with the actual image names
+import clothingImage from '../resources/images/clothing.jpg'; 
+import furnitureImage from '../resources/images/furniture.jpg'; 
+import electronicsImage from '../resources/images/electronics.jpg'; 
 
 const Home = () => {
     const featuredItems = [
@@ -28,7 +28,7 @@ const Home = () => {
 
     return (
         <div className="text-center mt-5">
-            <h1>Welcome to BidMaster, where deals happen</h1>
+            <h1>Welcome to BidMaster, Where Deals Happen</h1>
             <h2 className="mt-4">Featured Items</h2>
             <div className="row mt-4">
                 {featuredItems.map(item => (

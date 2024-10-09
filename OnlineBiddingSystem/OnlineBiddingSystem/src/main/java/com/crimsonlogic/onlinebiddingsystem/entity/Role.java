@@ -13,6 +13,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author Ruchitha
+ *
+ */
 @Entity
 @Table(name = "role")
 @Data
@@ -30,4 +34,8 @@ public class Role {
     public void generateId() {
         this.roleId = (Long) new IdGenerator().generate(null, this);
     }
+
+	public Role(Long roleId2) {
+		
+	}
 }

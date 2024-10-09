@@ -1,24 +1,39 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../resources/images/logo.png';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const CustomerNavbar = () => {
-    const [activeCategories, setActiveCategories] = useState([]);
+    const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchActiveCategories = async () => {
-            try {
-                const response = await axios.get('http://localhost:8080/api/categories/active');
-                setActiveCategories(response.data);
-            } catch (error) {
-                console.error("Error fetching active categories:", error);
-            }
+    const handleLogout = async () => {
+        try {
+            await axios.post('http://localhost:8080/api/auth/logout', {}, { withCredentials: true });
+            localStorage.removeItem('user'); // Clear user data from local storage
+            navigate('/login'); // Redirect to login page
+        } catch (error) {
+            console.error('Logout failed:', error);
+        }
+    };
+
+    const handleLogin = async () => {
+        // You can create a login form or handle login in a different way
+        const userData = {
+            email: 'user@example.com', // Replace with actual data from a form
+            password: 'password123' // Replace with actual data from a form
         };
-
-        fetchActiveCategories();
-    }, []);
+        try {
+            const response = await axios.post('http://localhost:8080/api/auth/login', userData, { withCredentials: true });
+            if (response.status === 200) {
+                // Store user data if needed
+                localStorage.setItem('user', JSON.stringify(response.data)); // Adjust this based on your API response
+                navigate('/customer/dashboard'); // Redirect to customer dashboard
+            }
+        } catch (error) {
+            console.error('Login failed:', error);
+        }
+    };
 
     return (
         <nav className="navbar navbar-expand-lg" style={{ backgroundColor: '#5c23a6', height: '60px' }}>
@@ -32,34 +47,16 @@ const CustomerNavbar = () => {
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav ms-auto">
                         <li className="nav-item dropdown">
-                            <button className="nav-link dropdown-toggle" id="shopByCategoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                Shop by Category
-                            </button>
-                            <ul className="dropdown-menu" aria-labelledby="shopByCategoryDropdown" style={{ backgroundColor: '#5c23a6' }}>
-                                {activeCategories.length > 0 ? (
-                                    activeCategories.map(category => (
-                                        <li key={category.categoryId}>
-                                            <Link className="dropdown-item" to={`/category/${category.categoryName.toLowerCase()}`}>
-                                                {category.categoryName}
-                                            </Link>
-                                        </li>
-                                    ))
-                                ) : (
-                                    <li><span className="dropdown-item">No categories available</span></li>
-                                )}
-                            </ul>
-                        </li>
-                        <li className="nav-item dropdown">
                             <button className="nav-link dropdown-toggle" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                 Profile
                             </button>
                             <ul className="dropdown-menu" aria-labelledby="profileDropdown" style={{ backgroundColor: '#5c23a6' }}>
                                 <li><Link className="dropdown-item" to="/customer/buyers-profile">Buyer's Profile</Link></li>
-                                <li><Link className="dropdown-item" to="/sellers-profile">Seller's Profile</Link></li>
+                                <li><Link className="dropdown-item" to="/customer/sellers-profile">Seller's Profile</Link></li>
                             </ul>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="/logout" style={{ color: 'white' }}>Logout</Link>
+                            <button className="nav-link" onClick={handleLogout} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }}>Logout</button>
                         </li>
                     </ul>
                 </div>

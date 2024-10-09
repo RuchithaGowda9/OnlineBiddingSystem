@@ -1,0 +1,109 @@
+package com.crimsonlogic.onlinebiddingsystem.serviceimpl;
+
+import com.crimsonlogic.onlinebiddingsystem.dto.UserInfoDto;
+import com.crimsonlogic.onlinebiddingsystem.entity.User;
+import com.crimsonlogic.onlinebiddingsystem.repository.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+class UserServiceImplTest {
+
+    @InjectMocks
+    private UserServiceImpl userService;
+
+    @Mock
+    private UserRepository userRepository;
+
+    private User user;
+    private UserInfoDto userInfoDto;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+
+        // Initialize test data
+        user = new User();
+        user.setUserId(1L);
+        user.setName("Test User");
+
+        userInfoDto = new UserInfoDto();
+        userInfoDto.setName("Updated User");
+    }
+
+    @Test
+    void testFindById_Success() {
+        // Arrange
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        // Act
+        User result = userService.findById(1L);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals("Test User", result.getName());
+        verify(userRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void testFindById_NotFound() {
+        // Arrange
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // Act
+        User result = userService.findById(1L);
+
+        // Assert
+        assertNull(result);
+        verify(userRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void testGetUserById_Success() {
+        // Arrange
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        // Act
+        User result = userService.getUserById(1L);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals("Test User", result.getName());
+        verify(userRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void testGetUserById_NotFound() {
+        // Arrange
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(NoSuchElementException.class, () -> {
+            userService.getUserById(1L);
+        });
+    }
+
+    @Test
+    void testUpdateUserInfo() {
+        // Arrange
+        // Assuming the updateUserInfo method would perform some logic,
+        // but as it's not implemented, we'll return true for this test.
+        when(userRepository.save(any(User.class))).thenReturn(user);
+        userService.updateUserInfo(userInfoDto);
+
+        // Act
+        boolean result = userService.updateUserInfo(userInfoDto);
+
+        // Assert
+        assertTrue(result);
+        verify(userRepository, times(1)).save(any(User.class)); // Verify that save was called
+    }
+}

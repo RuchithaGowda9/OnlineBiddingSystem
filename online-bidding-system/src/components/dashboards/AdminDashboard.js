@@ -29,10 +29,10 @@ const AdminDashboard = () => {
     if (!profile) {
         return <p>Loading profile information...</p>;
     }
-
+console.log(profile);
     return (
         <div className="text-center mt-5">
-            <h1>Admin Dashboard</h1>
+            <h1>Welcome, {profile.userInfo.firstName}!</h1> {/* Display the user's first name */}
             <img src={bannerImage} alt="Admin Dashboard Banner" style={{ width: '100%', maxHeight: '400px', objectFit: 'cover' }} />
             {/* Additional admin dashboard content can go here */}
         </div>

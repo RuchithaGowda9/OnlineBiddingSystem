@@ -1,0 +1,5 @@
+package com.crimsonlogic.onlinebiddingsystem.repository;
+
+public class OrderRepository {
+
+}

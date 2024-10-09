@@ -2,6 +2,10 @@ package com.crimsonlogic.onlinebiddingsystem.entity;
 
 import java.time.LocalDateTime;
 
+/**
+ * @author Ruchitha
+ *
+ */
 public class ErrorMessage {
 	private int statusCode;
 	private LocalDateTime errorTimestamp;

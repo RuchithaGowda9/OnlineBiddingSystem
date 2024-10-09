@@ -1,0 +1,31 @@
+package com.crimsonlogic.onlinebiddingsystem.serviceimpl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.crimsonlogic.onlinebiddingsystem.entity.Address;
+import com.crimsonlogic.onlinebiddingsystem.repository.AddressRepository;
+import com.crimsonlogic.onlinebiddingsystem.service.AddressService;
+@Service
+public class AddressServiceImpl implements AddressService{
+
+	@Autowired
+	AddressRepository addressRepository;
+
+	@Override
+	public Address addAddress(Address address) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Address> getAddressesByUser(Long userId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
+
+}

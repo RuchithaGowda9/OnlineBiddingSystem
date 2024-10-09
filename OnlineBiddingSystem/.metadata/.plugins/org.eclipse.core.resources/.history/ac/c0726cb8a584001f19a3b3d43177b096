@@ -1,0 +1,95 @@
+package com.crimsonlogic.onlinebiddingsystem.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.crimsonlogic.onlinebiddingsystem.dto.UserDto;
+import com.crimsonlogic.onlinebiddingsystem.entity.Order;
+import com.crimsonlogic.onlinebiddingsystem.entity.Product;
+import com.crimsonlogic.onlinebiddingsystem.entity.User;
+import com.crimsonlogic.onlinebiddingsystem.exception.ResourceNotFoundException;
+import com.crimsonlogic.onlinebiddingsystem.repository.OrderRepository;
+import com.crimsonlogic.onlinebiddingsystem.repository.ProductRepository;
+import com.crimsonlogic.onlinebiddingsystem.repository.UserRepository;
+import com.crimsonlogic.onlinebiddingsystem.service.AuthService;
+import com.crimsonlogic.onlinebiddingsystem.service.OrderService;
+
+import jakarta.servlet.http.HttpSession;
+
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+@RestController
+@RequestMapping("/api")
+public class OrderController {
+    @Autowired
+    private AuthService authService;
+    
+    @Autowired
+    private UserRepository userRepository;
+    
+    @Autowired
+    private ProductRepository productRepository;
+    
+    @Autowired
+    private OrderRepository orderRepository;
+    
+    @Autowired 
+    private OrderService orderService;
+
+    @PostMapping("/createorder")
+    public Order createOrder(@RequestBody Order order) throws ResourceNotFoundException { 
+    	System.out.println("Order details from front end "+order);
+        User seller = userRepository.findById(order.getSellerId().getUserId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Seller not found"));
+        User buyer = userRepository.findById(order.getBuyerId().getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("Buyer not found"));
+        User deliveryPerson = userRepository.findById(order.getDeliveryPersonId().getUserId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Delivery person not found"));
+        Product product = productRepository.findById(order.getProduct().getProductId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+        
+        product.setProductStatus("sold");
+        productRepository.save(product);
+        
+        Float bidAmount = order.getBidAmount();
+        authService.deductFromwallet(buyer.getUserId(), bidAmount);
+
+        order.setBuyerId(buyer);
+        order.setSellerId(seller);
+        order.setDeliveryPersonId(deliveryPerson);
+        order.setProduct(product);
+
+        return orderRepository.save(order);
+    }
+    @GetMapping("/orders")
+    public ResponseEntity<List<Order>> getOrderHistory(HttpSession session) {
+        UserDto userDto = (UserDto) session.getAttribute("user");
+        if (userDto == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        List<Order> orders = orderService.getOrdersByBuyerId(userDto.getId());
+        return ResponseEntity.ok(orders);
+    }
+    @GetMapping("/delivery-orders")
+    public List<Order> getDeliveryOrders(HttpSession session) throws ResourceNotFoundException {
+        UserDto user = (UserDto) session.getAttribute("user");
+        if (user == null) {
+            throw new ResourceNotFoundException("User not logged in");
+            //throw new UnauthorizedException("User not logged in");
+        }
+        
+        User deliveryPerson = new User();
+        deliveryPerson.setUserId(user.getId()); // Assuming user ID is the delivery person ID
+        return orderService.getOrdersByDeliveryPerson(deliveryPerson);
+    }
+
+}

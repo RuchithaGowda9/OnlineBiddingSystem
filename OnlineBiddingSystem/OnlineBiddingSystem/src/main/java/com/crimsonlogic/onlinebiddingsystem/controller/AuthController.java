@@ -7,13 +7,12 @@ import com.crimsonlogic.onlinebiddingsystem.dto.UserInfoDto;
 import com.crimsonlogic.onlinebiddingsystem.entity.Role;
 import com.crimsonlogic.onlinebiddingsystem.entity.User;
 import com.crimsonlogic.onlinebiddingsystem.entity.UserInfo;
-import com.crimsonlogic.onlinebiddingsystem.entity.Wallet;
 import com.crimsonlogic.onlinebiddingsystem.repository.RoleRepository;
+import com.crimsonlogic.onlinebiddingsystem.repository.UserRepository;
 import com.crimsonlogic.onlinebiddingsystem.service.AuthService;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +21,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpSession;
 
+/**
+ * @author Ruchitha
+ *
+ */
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RestController
 @RequestMapping("/api/auth")
@@ -32,6 +35,10 @@ public class AuthController {
 	
 	@Autowired
 	private RoleRepository roleRepository;
+	
+	@Autowired
+	private UserRepository userRepository;
+	
     private final ModelMapper modelMapper;
 
     @Autowired
@@ -42,11 +49,10 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<RegistrationDto> register(@RequestBody RegistrationDto registrationDto, HttpSession session) {
-        // Convert DTOs to entities
+
         User userPayload = modelMapper.map(registrationDto.getUser(), User.class);
         UserInfo userInfoPayload = modelMapper.map(registrationDto.getUserInfo(), UserInfo.class);
 
-        // Ensure the roleName is provided
         if (registrationDto.getUserInfo().getRoleName() != null) {
             Role role = roleRepository.findByName(registrationDto.getUserInfo().getRoleName())
                 .orElseThrow(() -> new RuntimeException("Role not found: " + registrationDto.getUserInfo().getRoleName()));
@@ -54,19 +60,11 @@ public class AuthController {
         } else {
             throw new RuntimeException("Role name must be provided");
         }
-
-        // Call the service to register
         authService.register(userPayload, userInfoPayload);
-
-        // Optionally, convert back to DTOs for response
         UserDto userResponse = modelMapper.map(userPayload, UserDto.class);
         UserInfoDto userInfoResponse = modelMapper.map(userInfoPayload, UserInfoDto.class);
-
-        // Store user info in session
         session.setAttribute("user", userResponse);
         session.setAttribute("userInfo", userInfoResponse);
-
-        // Create response DTO
         RegistrationDto responseDto = new RegistrationDto();
         responseDto.setUser(userResponse);
         responseDto.setUserInfo(userInfoResponse);
@@ -76,31 +74,34 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody UserDto userDto, HttpSession session) {
+       
         String dashboardUrl = authService.login(userDto);
-
         UserInfoDto userInfo = authService.getUserInfoByEmail(userDto.getEmail());
-        
-        session.setAttribute("user", userDto);
+        User user = userRepository.findByEmail(userDto.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        UserDto fullUserDto = modelMapper.map(user, UserDto.class);
+        session.setAttribute("user", fullUserDto);
         session.setAttribute("userInfo", userInfo);
-        System.out.println(userInfo);        
+        
+        System.out.println("User from session: " + fullUserDto);
+        System.out.println("UserInfo from session: " + userInfo);
+
         return new ResponseEntity<>(dashboardUrl, HttpStatus.OK);
     }
+
     @GetMapping("/user-info")
     public ResponseEntity<Map<String, Object>> getUserInfo(HttpSession session) {
         UserInfoDto userInfo = (UserInfoDto) session.getAttribute("userInfo");
-        UserDto user = (UserDto) session.getAttribute("user"); // Fetch user from session
-        
+        UserDto user = (UserDto) session.getAttribute("user"); 
+        System.out.println("User from session: " + user);
         System.out.println(userInfo);
         
         if (userInfo == null || user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-
-        // Combine user and userInfo into a single response
         Map<String, Object> response = new HashMap<>();
         response.put("userInfo", userInfo);
-        response.put("user", user); // This will include email and password
-
+        response.put("user", user); 
         return ResponseEntity.ok(response);
     }
 
@@ -111,12 +112,10 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        // Validate current password
         if (!authService.validatePassword(user.getEmail(), changePasswordDto.getCurrentPassword())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Current password is incorrect");
         }
 
-        // Update password
         authService.updatePassword(user.getEmail(), changePasswordDto.getNewPassword());
         return ResponseEntity.ok("Password changed successfully");
     }
@@ -145,5 +144,11 @@ public class AuthController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpSession session) {
+        session.invalidate(); 
+        return ResponseEntity.ok("Logged out successfully");
+    }
+
 
 }

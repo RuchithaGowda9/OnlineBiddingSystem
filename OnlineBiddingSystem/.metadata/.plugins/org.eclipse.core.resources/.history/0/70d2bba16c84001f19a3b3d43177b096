@@ -1,0 +1,29 @@
+package com.crimsonlogic.onlinebiddingsystem.controller;
+
+import com.crimsonlogic.onlinebiddingsystem.entity.DeliveryAgentDetails;
+import com.crimsonlogic.onlinebiddingsystem.repository.DeliveryAgentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/auth/delivery-agents")
+public class DeliveryAgentController {
+
+    @Autowired
+    private DeliveryAgentRepository deliveryAgentRepository;
+
+    @PostMapping
+    public ResponseEntity<DeliveryAgentDetails> addDeliveryAgent(@RequestBody DeliveryAgentDetails deliveryAgent) {
+        DeliveryAgentDetails savedAgent = deliveryAgentRepository.save(deliveryAgent);
+        return ResponseEntity.ok(savedAgent);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<DeliveryAgentDetails>> getAllDeliveryAgents() {
+        List<DeliveryAgentDetails> agents = deliveryAgentRepository.findAll();
+        return ResponseEntity.ok(agents);
+    }
+}

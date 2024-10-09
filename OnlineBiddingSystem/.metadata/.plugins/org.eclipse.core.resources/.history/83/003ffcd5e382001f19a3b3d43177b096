@@ -1,0 +1,9 @@
+package com.crimsonlogic.onlinebiddingsystem.service;
+
+import com.crimsonlogic.onlinebiddingsystem.entity.Bid;
+
+public interface BidService {
+
+	Bid placeBid(Bid bid);
+
+}

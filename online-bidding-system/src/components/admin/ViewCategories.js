@@ -71,7 +71,7 @@ const ViewCategories = () => {
                                             >
                                                 {category.status === 'active' ? 'Deactivate' : 'Activate'}
                                             </button>
-                                            <Link to={`/admin/update-category/${category.categoryId}`} className="btn btn-info" style={{ marginLeft: '10px' }}>
+                                            <Link to={`/admin/update-category/${category.categoryId}`} className="btn btn-info" style={{ backgroundColor: '#5c23a6', color: 'white', marginLeft: '10px', borderRadius: '5px' }}>
                                                 Update
                                             </Link>
                                         </td>

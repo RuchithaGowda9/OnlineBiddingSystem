@@ -1,0 +1,11 @@
+package com.crimsonlogic.onlinebiddingsystem.service;
+
+import java.util.List;
+
+import com.crimsonlogic.onlinebiddingsystem.entity.UserInfo;
+
+public interface DeliveryAgentService {
+	    List<UserInfo> findDeliveryPersonsByAgencyName(String agencyName);
+	}
+
+

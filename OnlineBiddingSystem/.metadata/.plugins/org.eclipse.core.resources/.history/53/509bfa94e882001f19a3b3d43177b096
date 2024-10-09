@@ -1,0 +1,23 @@
+package com.crimsonlogic.onlinebiddingsystem.controller;
+
+import com.crimsonlogic.onlinebiddingsystem.entity.Bid;
+import com.crimsonlogic.onlinebiddingsystem.service.BidService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+@RestController
+@RequestMapping("/api/auth")
+public class BidController {
+
+	@Autowired
+	private BidService bidService;
+
+	@PostMapping("/bids")
+    public ResponseEntity<Bid> placeBid(@RequestBody Bid bid) {
+        Bid savedBid = bidService.placeBid(bid);
+        return ResponseEntity.ok(savedBid);
+    }
+
+}

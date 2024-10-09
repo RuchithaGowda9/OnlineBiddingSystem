@@ -1,0 +1,30 @@
+package com.crimsonlogic.onlinebiddingsystem.serviceimpl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.crimsonlogic.onlinebiddingsystem.dto.OrderDTO;
+import com.crimsonlogic.onlinebiddingsystem.entity.Order;
+import com.crimsonlogic.onlinebiddingsystem.entity.Product;
+import com.crimsonlogic.onlinebiddingsystem.entity.User;
+import com.crimsonlogic.onlinebiddingsystem.repository.OrderRepository;
+import com.crimsonlogic.onlinebiddingsystem.service.OrderService;
+
+@Service
+public class OrderServiceImpl implements OrderService {
+    @Autowired
+    private OrderRepository orderRepository;
+
+    @Override
+    public void createOrder(OrderDTO orderDTO) {
+        Order order = new Order();
+        //order.setProduct(new Product(orderDTO.getProductId())); // Assuming you have a Product entity
+        order.setBuyerId(new User(orderDTO.getBuyerId()));
+        order.setSellerId(new User(orderDTO.getSellerId()));
+        order.setDeliveryPersonId(new User(orderDTO.getDeliveryAgentDetailsId()));
+        order.setOrderStatus("Pending"); // Or any default status
+        orderRepository.save(order);
+    }
+
+
+}

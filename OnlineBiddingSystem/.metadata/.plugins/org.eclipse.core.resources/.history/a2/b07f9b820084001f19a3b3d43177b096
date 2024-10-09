@@ -1,0 +1,16 @@
+@Service
+public class OrderServiceImpl implements OrderService {
+    @Autowired
+    private OrderRepository orderRepository;
+
+    @Override
+    public void createOrder(OrderDTO orderDTO) {
+        Order order = new Order();
+        order.setProduct(new Product(orderDTO.getProductId())); // Assuming you have a Product entity
+        order.setBuyerId(new User(orderDTO.getBuyerId()));
+        order.setSellerId(new User(orderDTO.getSellerId()));
+        order.setDeliveryPersonId(new User(orderDTO.getDeliveryAgentDetailsId()));
+        order.setOrderStatus("Pending"); // Or any default status
+        orderRepository.save(order);
+    }
+}

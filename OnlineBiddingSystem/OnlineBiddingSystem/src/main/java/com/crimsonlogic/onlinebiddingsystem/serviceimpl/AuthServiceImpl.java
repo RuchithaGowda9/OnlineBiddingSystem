@@ -66,11 +66,11 @@ public class AuthServiceImpl implements AuthService {
 
 		userInfoRepository.save(userInfo);
 		if ("CUSTOMER".equalsIgnoreCase(userInfo.getRole().getName().toString())) {
-	        Wallet wallet = new Wallet();
-	        wallet.setUser(user);
-	        wallet.setBalance(0.0); 
-	        walletRepository.save(wallet);
-	    }
+			Wallet wallet = new Wallet();
+			wallet.setUser(user);
+			wallet.setBalance(0.0);
+			walletRepository.save(wallet);
+		}
 	}
 
 	@Override
@@ -102,8 +102,13 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public UserInfoDto getUserInfoByEmail(String email) {
 		User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+		System.out.println("Retrieved User: " + user);
+
 		UserInfo userInfo = userInfoRepository.findByUser(user)
 				.orElseThrow(() -> new RuntimeException("UserInfo not found"));
+
+		UserDto userDto = modelMapper.map(user, UserDto.class);
+		System.out.println("Mapped UserDto: " + userDto);
 
 		return modelMapper.map(userInfo, UserInfoDto.class);
 	}
@@ -117,7 +122,7 @@ public class AuthServiceImpl implements AuthService {
 	public boolean validatePassword(String email, String password) {
 		Optional<User> optionalUser = userRepository.findByEmail(email);
 		if (!optionalUser.isPresent()) {
-			return false; 
+			return false;
 		}
 
 		User user = optionalUser.get();
@@ -137,24 +142,33 @@ public class AuthServiceImpl implements AuthService {
 
 		userRepository.save(user);
 	}
+
 	@Override
 	public Double getWalletBalance(String email) {
-	    User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
-	    Wallet wallet = walletRepository.findByUser(user).orElseThrow(() -> new RuntimeException("Wallet not found"));
-	    return wallet.getBalance();
-	}
-	@Override
-	public void rechargeWallet(String email, Double amount) {
-	    if (amount <= 0 || amount > 100000) {
-	        throw new RuntimeException("Recharge amount must be between 1 and 100,000 rupees.");
-	    }
-	    
-	    User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
-	    Wallet wallet = walletRepository.findByUser(user).orElseThrow(() -> new RuntimeException("Wallet not found"));
-	    
-	    wallet.setBalance(wallet.getBalance() + amount);
-	    walletRepository.save(wallet);
+		User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+		Wallet wallet = walletRepository.findByUser(user).orElseThrow(() -> new RuntimeException("Wallet not found"));
+		return wallet.getBalance();
 	}
 
+	@Override
+	public void rechargeWallet(String email, Double amount) {
+		if (amount <= 0 || amount > 100000) {
+			throw new RuntimeException("Recharge amount must be between 1 and 100,000 rupees.");
+		}
+
+		User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+		Wallet wallet = walletRepository.findByUser(user).orElseThrow(() -> new RuntimeException("Wallet not found"));
+
+		wallet.setBalance(wallet.getBalance() + amount);
+		walletRepository.save(wallet);
+	}
+
+	@Override
+	public void deductFromwallet(Long buyerId, Float bidAmount) {
+		User user = userRepository.findById(buyerId).orElseThrow(() -> new RuntimeException("User not found"));
+		Wallet wallet = walletRepository.findByUser(user).orElseThrow(() -> new RuntimeException("Wallet not found"));
+		wallet.setBalance(wallet.getBalance() - bidAmount);
+		walletRepository.save(wallet);
+	}
 
 }

@@ -1,0 +1,40 @@
+package com.crimsonlogic.onlinebiddingsystem.controller;
+
+import com.crimsonlogic.onlinebiddingsystem.dto.ProductDto;
+import com.crimsonlogic.onlinebiddingsystem.service.ProductService;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+@RestController
+@RequestMapping("/api/auth/products")
+public class ProductController {
+
+    private final ProductService productService;
+    private final ModelMapper modelMapper;
+
+    @Autowired
+    public ProductController(ProductService productService, ModelMapper modelMapper) {
+        this.productService = productService;
+        this.modelMapper = modelMapper;
+    }
+
+    @PostMapping("/add/{sellerId}")
+    public ResponseEntity<ProductDto> addProduct(@PathVariable Long sellerId, @RequestBody ProductDto productDto) {
+        productDto.setSellerId(sellerId); // Set seller ID
+        productService.addProduct(productDto);
+        return new ResponseEntity<>(productDto, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/seller/{sellerId}")
+    public ResponseEntity<List<ProductDto>> getProductsBySeller(@PathVariable Long sellerId) {
+        List<ProductDto> products = productService.getProductsBySeller(sellerId);
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+}

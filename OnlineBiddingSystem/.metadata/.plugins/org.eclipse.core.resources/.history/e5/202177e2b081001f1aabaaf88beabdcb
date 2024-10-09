@@ -1,0 +1,9 @@
+package com.crimsonlogic.onlinebiddingsystem.service;
+
+import com.crimsonlogic.onlinebiddingsystem.entity.Address;
+
+public interface AddressService {
+	
+	public Address addAddress(Address address);
+
+}

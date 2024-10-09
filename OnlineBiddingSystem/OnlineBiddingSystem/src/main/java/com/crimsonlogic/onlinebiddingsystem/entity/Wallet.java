@@ -13,6 +13,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author Ruchitha
+ *
+ */
 @Entity
 @Table(name = "wallet")
 @Data
@@ -27,7 +31,7 @@ public class Wallet {
     @JoinColumn(name = "user_id")
     private User user;
 
-	@Column(name = "balance")
+	@Column(name = "balance", length = 10)
 	private Double balance;
 	
 	@PrePersist

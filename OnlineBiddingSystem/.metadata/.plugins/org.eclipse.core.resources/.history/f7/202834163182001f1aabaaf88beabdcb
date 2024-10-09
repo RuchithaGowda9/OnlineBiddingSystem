@@ -1,0 +1,7 @@
+package com.crimsonlogic.onlinebiddingsystem.service;
+
+import com.crimsonlogic.onlinebiddingsystem.dto.ProductDto;
+
+public interface ProductService {
+    void addProduct(ProductDto productDto);
+}

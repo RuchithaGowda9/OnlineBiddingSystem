@@ -1,0 +1,70 @@
+package com.crimsonlogic.onlinebiddingsystem.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.crimsonlogic.onlinebiddingsystem.dto.DeliveryAgentDTO;
+import com.crimsonlogic.onlinebiddingsystem.dto.OrderDTO;
+import com.crimsonlogic.onlinebiddingsystem.entity.Order;
+import com.crimsonlogic.onlinebiddingsystem.entity.Product;
+import com.crimsonlogic.onlinebiddingsystem.entity.User;
+import com.crimsonlogic.onlinebiddingsystem.exception.ResourceNotFoundException;
+import com.crimsonlogic.onlinebiddingsystem.repository.OrderRepository;
+import com.crimsonlogic.onlinebiddingsystem.repository.ProductRepository;
+import com.crimsonlogic.onlinebiddingsystem.repository.UserRepository;
+import com.crimsonlogic.onlinebiddingsystem.service.AuthService;
+import com.crimsonlogic.onlinebiddingsystem.service.DeliveryAgentDetailsService;
+import com.crimsonlogic.onlinebiddingsystem.service.OrderService;
+
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+@RestController
+@RequestMapping("/api")
+public class OrderController {
+    @Autowired
+    private AuthService authService;
+    
+    @Autowired
+    private UserRepository userRepository;
+    
+    @Autowired
+    private ProductRepository productRepository;
+    
+    @Autowired
+    private OrderRepository orderRepository;
+
+    @PostMapping("/createorder")
+    public Order createOrder(@RequestBody Order order) throws ResourceNotFoundException { 
+    	System.out.println("Order details from front end "+order);
+        User seller = userRepository.findById(order.getSellerId().getUserId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Seller not found"));
+        User buyer = userRepository.findById(order.getBuyerId().getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("Buyer not found"));
+        User deliveryPerson = userRepository.findById(order.getDeliveryPersonId().getUserId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Delivery person not found"));
+        Product product = productRepository.findById(order.getProduct().getProductId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+        
+        product.setProductStatus("sold");
+        productRepository.save(product);
+        
+        Float bidAmount = order.getBidAmount();
+        walletService.deductFromWallet(buyer.getEmail(), bidAmount);
+
+        order.setBuyerId(buyer);
+        order.setSellerId(seller);
+        order.setDeliveryPersonId(deliveryPerson);
+        order.setProduct(product);
+
+        return orderRepository.save(order);
+    }
+
+}

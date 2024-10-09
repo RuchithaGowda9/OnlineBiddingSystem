@@ -1,0 +1,24 @@
+.card-img {
+    height: 200px; /* Set a fixed height for the image */
+    object-fit: cover; /* Ensure the image covers the area without distortion */
+}
+
+.card {
+    height: 100%; /* Make cards have uniform height */
+    display: flex;
+    flex-direction: column;
+}
+
+.card-body {
+    flex-grow: 1; /* Allow the card body to take the remaining space */
+}
+.custom-button {
+    background-color: #5c23a6; /* Default background color */
+    color: white; /* Text color */
+    border: none; /* No border */
+    transition: background-color 0.3s; /* Smooth transition for background color */
+}
+
+.custom-button:hover {
+    background-color: #6e4b95; /* Lighter shade of your default color */
+}

@@ -1,0 +1,45 @@
+package com.crimsonlogic.onlinebiddingsystem.serviceimpl;
+
+import java.util.List;
+
+import org.apache.catalina.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.crimsonlogic.onlinebiddingsystem.entity.Bid;
+import com.crimsonlogic.onlinebiddingsystem.entity.Product;
+import com.crimsonlogic.onlinebiddingsystem.repository.BidRepository;
+import com.crimsonlogic.onlinebiddingsystem.repository.ProductRepository;
+import com.crimsonlogic.onlinebiddingsystem.repository.UserRepository;
+import com.crimsonlogic.onlinebiddingsystem.service.BidService;
+@Service
+public class BidServiceImpl implements BidService{
+
+	 @Autowired
+	    private BidRepository bidRepository;
+
+	    @Autowired
+	    private ProductRepository productRepository;
+
+	    @Autowired
+	    private UserRepository userRepository;
+
+	    public Bid placeBid(Bid bid) {
+	        // Find the product and user by their IDs
+	        Product product = productRepository.findById(bid.getProduct().getProductId()).orElseThrow(() -> new RuntimeException("Product not found"));
+	        User bidder = userRepository.findById(bid.getBidderId().getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
+
+	        // Set the bid properties
+	        bid.setProduct(product);
+	        bid.setBidderId(bidder);
+	        bid.setBidTime(LocalDateTime.now());
+
+	        // Save the bid
+	        return bidRepository.save(bid);
+	    }
+
+	 	@Override
+	 	public List<Bid> getBidsByProduct(Product product) {
+	        return bidRepository.findByProduct(product);
+	    }
+}

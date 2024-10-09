@@ -1,0 +1,19 @@
+package com.crimsonlogic.onlinebiddingsystem.serviceimpl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.crimsonlogic.onlinebiddingsystem.entity.Address;
+import com.crimsonlogic.onlinebiddingsystem.repository.AddressRepository;
+import com.crimsonlogic.onlinebiddingsystem.service.AddressService;
+
+public class AddressServiceImpl implements AddressService{
+
+	@Autowired
+	AddressRepository addressRepository;
+	
+	@Override
+	public void saveAddress(Address address) {
+				
+	}
+
+}

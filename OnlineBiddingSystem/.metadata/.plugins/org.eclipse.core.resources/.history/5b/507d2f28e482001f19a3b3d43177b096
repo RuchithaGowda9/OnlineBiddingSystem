@@ -1,0 +1,25 @@
+package com.crimsonlogic.onlinebiddingsystem.serviceimpl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.crimsonlogic.onlinebiddingsystem.entity.Bid;
+import com.crimsonlogic.onlinebiddingsystem.repository.BidRepository;
+import com.crimsonlogic.onlinebiddingsystem.service.BidService;
+@Service
+public class BidServiceImpl implements BidService{
+	 @Autowired
+	    private BidRepository bidRepository;
+
+	 	@Override
+	    public Bid placeBid(Bid bid) {
+	        return bidRepository.save(bid);
+	    }
+
+	 	@Override
+	    public List<Bid> getBidsForProduct(Long productId) {
+	        return bidRepository.findByProductId(productId);
+	    }
+}

@@ -1,0 +1,21 @@
+@RestController
+@RequestMapping("/api/auth")
+public class AddressController {
+
+    @Autowired
+    private AddressService addressService;
+
+    @PostMapping("/address")
+    public ResponseEntity<String> addAddress(@RequestBody Address address, HttpSession session) {
+        UserDto user = (UserDto) session.getAttribute("user");
+        
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        address.setUser(new User(user.getId())); // Assuming User has a constructor with userId
+        addressService.saveAddress(address);
+
+        return ResponseEntity.ok("Address added successfully");
+    }
+}

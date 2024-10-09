@@ -1,0 +1,11 @@
+package com.crimsonlogic.onlinebiddingsystem.service;
+
+import com.crimsonlogic.onlinebiddingsystem.controller.List;
+import com.crimsonlogic.onlinebiddingsystem.dto.ProductDto;
+import com.crimsonlogic.onlinebiddingsystem.exception.ResourceNotFoundException;
+
+public interface ProductService {
+    void addProduct(ProductDto productDto) throws ResourceNotFoundException;
+
+	List<ProductDto> getProductsBySeller(Long sellerId);
+}
